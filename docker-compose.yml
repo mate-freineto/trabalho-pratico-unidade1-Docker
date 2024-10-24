@@ -1,0 +1,58 @@
+name: trabalho-unidade-1
+
+x-environment-backend: &default-backend-env
+  FLASK_APP: "run.py"
+  FLASK_DB_TYPE: "postgres"
+  FLASK_DB_USER: "postgres"
+  FLASK_DB_NAME: "postgres"
+  FLASK_DB_PASSWORD: "secretpass"
+  FLASK_DB_HOST: "postgres"
+  FLASK_DB_PORT: "5432"
+
+services:
+  postgres:
+    image: postgres:17.0
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secretpass
+      POSTGRES_DB: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+    restart: always
+
+  backend1:
+    image: backend:1.0.0
+    environment:
+      <<: *default-backend-env
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
+    restart: always
+
+  backend2:
+    image: backend:1.0.0
+    environment:
+      <<: *default-backend-env
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
+    restart: always
+
+  frontend:
+    image: frontend:1.0.0
+    ports:
+      - "80:80"
+      - "5000:5000"
+    networks:
+      - backend-network
+    restart: always
+
+volumes:
+  postgres_data:
+
+networks:
+  backend-network:
