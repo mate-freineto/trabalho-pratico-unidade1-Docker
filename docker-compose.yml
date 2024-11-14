@@ -22,31 +22,22 @@ services:
       - backend-network
     restart: always
 
-  backend1:
-    image: backend:1.0.0
+  backend:
+    image: matefreitasneto/backend:1.0.0
     environment:
       <<: *default-backend-env
     depends_on:
       - postgres
     networks:
       - backend-network
-    restart: always
-
-  backend2:
-    image: backend:1.0.0
-    environment:
-      <<: *default-backend-env
-    depends_on:
-      - postgres
-    networks:
-      - backend-network
+    deploy:
+      replicas: 2
     restart: always
 
   frontend:
-    image: frontend:1.0.0
+    image: matefreitasneto/frontend:1.0.3
     ports:
-      - "80:80"
-      - "5000:5000"
+      - "8080:8080"
     networks:
       - backend-network
     restart: always
